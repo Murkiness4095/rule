@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url"
 const OUT = join(dirname(fileURLToPath(import.meta.url)))
 
 const SOURCES = {
+  "adblock": "https://cdn.jsdelivr.net/gh/217heidai/adblockfilters@main/rules/adblockmihomolite.yaml",
   "tiktok": "https://cdn.jsdelivr.net/gh/powerfullz/override-rules@main/ruleset/TikTok.list",
   "ehentai": "https://cdn.jsdelivr.net/gh/powerfullz/override-rules@main/ruleset/EHentai.list",
   "steamfix": "https://cdn.jsdelivr.net/gh/powerfullz/override-rules@main/ruleset/SteamFix.list",
