@@ -202,23 +202,33 @@ function buildDns(detour) {
   return {
     servers: [
       { tag: "local", type: "local", prefer_go: true },
-      { tag: "ali", type: "https", server: "223.5.5.5" },
-      { tag: "tx", type: "https", server: "doh.pub", domain_resolver: "hosts" },
+      // ali 用 udp 明文 223.5.5.5，不用 DoH：实测 DoH(443) 在部分网络只有
+      // 约 4/10 连通率，而它同时是 clash_mode Direct / 国内域名 / geoip-cn
+      // 的出口，一旦不通，启动阶段所有远程 rule-set 会一起失败
+      // （dial tcp 223.5.5.5:443: i/o timeout）。udp:53 不占用 443，
+      // 也不会被 TUN 的 HTTPS 劫持路径卷入。
+      { tag: "ali", type: "udp", server: "223.5.5.5" },
       { tag: "google", type: "https", server: "8.8.8.8", detour },
       { tag: "fakeip", type: "fakeip", inet4_range: "198.19.0.0/16" },
+      // tx 依赖 hosts 里预置的 doh.pub 地址
+      { tag: "tx", type: "https", server: "doh.pub", domain_resolver: "hosts" },
       { tag: "hosts", type: "hosts", predefined: { "doh.pub": ["1.12.12.21", "120.53.53.53"] } },
     ],
     rules: [
+      // clash_mode 规则排在最后：启动阶段 clash API 尚未就绪，提前匹配会把引导
+      // 解析导向 ali，拖慢甚至阻塞 rule-set 下载。移到末尾后仅作兜底。
       { query_type: ["HTTPS", "SVCB"], action: "reject" },
-      { clash_mode: "Direct", server: "ali" },
-      { clash_mode: "Global", server: "fakeip" },
       { rule_set: ["fakeipfilter-cn", "geosite-cn", "geosite-apple@cn", "geosite-microsoft@cn", "geosite-private"], server: "ali" },
       { rule_set: "fakeipfilter-!cn", server: "google" },
       { type: "logical", mode: "and", rules: [{ query_type: ["A", "AAAA"] }, { rule_set: "geosite-geolocation-!cn", invert: true }], action: "evaluate", server: "google", client_subnet: "223.5.5.0/24", timeout: "2s" },
       { match_response: true, rule_set: "geoip-cn", server: "ali" },
       { query_type: ["A", "AAAA"], server: "fakeip", rewrite_ttl: 1 },
+      { clash_mode: "Direct", server: "ali" },
+      { clash_mode: "Global", server: "fakeip" },
     ],
-    final: "google",
+    // 引导解析（远程 rule-set 下载）用 local：走系统 stub，不依赖任何 DoH，
+    // 也不经过尚未就绪的节点组。规则集下载完成后正常流量仍按 dns.rules 分流。
+    final: "local",
     strategy: "ipv4_only",
     cache_capacity: 8192,
     optimistic: { enabled: true },
@@ -234,6 +244,10 @@ function build(platform, opts = {}) {
   src.outbounds = buildOutbounds(ref1nd)
   src.route.rules = buildRules(resolveRule)
   src.route.rule_set = buildRuleSets()
+  // 引导解析（下载远程规则集、出站握手）默认走系统解析器：
+  // default_domain_resolver 指向 ali 时，若 223.5.5.5:443 在当前网络不通，
+  // 启动阶段所有远程 rule-set 会一起 Get 失败。local 走系统 stub/上游，最稳。
+  src.route.default_domain_resolver = { server: opts.resolver ?? "local" }
   if (opts.nixos) {
     src.services[0].dashboard.path = "/var/lib/sing-box/ui"
     src.experimental.cache_file.path = "/var/lib/sing-box/cache.db"

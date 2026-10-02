@@ -9,14 +9,8 @@
       },
       {
         "tag": "ali",
-        "type": "https",
+        "type": "udp",
         "server": "223.5.5.5"
-      },
-      {
-        "tag": "tx",
-        "type": "https",
-        "server": "doh.pub",
-        "domain_resolver": "hosts"
       },
       {
         "tag": "google",
@@ -28,6 +22,12 @@
         "tag": "fakeip",
         "type": "fakeip",
         "inet4_range": "198.19.0.0/16"
+      },
+      {
+        "tag": "tx",
+        "type": "https",
+        "server": "doh.pub",
+        "domain_resolver": "hosts"
       },
       {
         "tag": "hosts",
@@ -47,14 +47,6 @@
           "SVCB"
         ],
         "action": "reject"
-      },
-      {
-        "clash_mode": "Direct",
-        "server": "ali"
-      },
-      {
-        "clash_mode": "Global",
-        "server": "fakeip"
       },
       {
         "rule_set": [
@@ -102,9 +94,17 @@
         ],
         "server": "fakeip",
         "rewrite_ttl": 1
+      },
+      {
+        "clash_mode": "Direct",
+        "server": "ali"
+      },
+      {
+        "clash_mode": "Global",
+        "server": "fakeip"
       }
     ],
-    "final": "google",
+    "final": "local",
     "strategy": "ipv4_only",
     "cache_capacity": 8192,
     "optimistic": {
@@ -1844,7 +1844,7 @@
     "default_http_client": "直连下载",
     "auto_detect_interface": true,
     "default_domain_resolver": {
-      "server": "ali"
+      "server": "local"
     }
   },
   "inbounds": [
