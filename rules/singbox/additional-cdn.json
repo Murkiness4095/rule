@@ -1,0 +1,130 @@
+{
+  "version": 3,
+  "rules": [
+    {
+      "domain": [
+        "production.cloudflare.docker.com"
+      ]
+    },
+    {
+      "domain": [
+        "dl.flathub.org"
+      ]
+    },
+    {
+      "domain_suffix": [
+        "data.microsoft.com"
+      ]
+    },
+    {
+      "domain": [
+        "assets.ppy.sh"
+      ]
+    },
+    {
+      "domain": [
+        "autoupdate.termius.com"
+      ]
+    },
+    {
+      "domain": [
+        "update.ayugram.one"
+      ]
+    },
+    {
+      "domain": [
+        "sh.nfs.pub"
+      ]
+    },
+    {
+      "domain": [
+        "download.calibre-ebook.com"
+      ]
+    },
+    {
+      "domain": [
+        "dl.google.com"
+      ]
+    },
+    {
+      "domain": [
+        "builds.dotnet.microsoft.com"
+      ]
+    },
+    {
+      "domain": [
+        "downloadmirror.intel.com"
+      ]
+    },
+    {
+      "domain": [
+        "pkgs.tailscale.com"
+      ]
+    },
+    {
+      "domain": [
+        "dl.tailscale.com"
+      ]
+    },
+    {
+      "domain": [
+        "updates-cdn.bravesoftware.com"
+      ]
+    },
+    {
+      "domain": [
+        "updates.bravesoftware.com"
+      ]
+    },
+    {
+      "domain": [
+        "dl.brave.com"
+      ]
+    },
+    {
+      "domain": [
+        "referrals.brave.com"
+      ]
+    },
+    {
+      "domain_suffix": [
+        "scdn.co"
+      ]
+    },
+    {
+      "domain_suffix": [
+        "spotifycdn.com"
+      ]
+    },
+    {
+      "domain_suffix": [
+        "spotifycdn.net"
+      ]
+    },
+    {
+      "domain_suffix": [
+        "pscdn.co"
+      ]
+    },
+    {
+      "domain": [
+        "cdn.geekbench.com"
+      ]
+    },
+    {
+      "domain_regex": [
+        "^gvt\\d\\.com$"
+      ]
+    },
+    {
+      "domain_regex": [
+        "^downloads\\d+\\.broadcom\\.com$"
+      ]
+    },
+    {
+      "domain_regex": [
+        "^cdn\\d{2}\\.foxitsoftware\\.com$"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "version": 3,
+  "rules": [
+    {
+      "domain_suffix": [
+        "e-hentai.org"
+      ]
+    },
+    {
+      "domain_suffix": [
+        "ehgt.org"
+      ]
+    },
+    {
+      "domain_suffix": [
+        "ehwiki.org"
+      ]
+    },
+    {
+      "domain_suffix": [
+        "exhentai.org"
+      ]
+    },
+    {
+      "domain_suffix": [
+        "hath.network"
+      ]
+    },
+    {
+      "domain_suffix": [
+        "hentaiverse.org"
+      ]
+    }
+  ]
+}

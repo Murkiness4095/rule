@@ -1,0 +1,130 @@
+{
+  "version": 3,
+  "rules": [
+    {
+      "domain": [
+        "7h15.ru1353t.1s.m4d3.by.5ukk4w.skk.moe"
+      ]
+    },
+    {
+      "domain": [
+        "cdn-msp.jmcomic.me"
+      ]
+    },
+    {
+      "domain": [
+        "cdn-msp.18comic.org"
+      ]
+    },
+    {
+      "domain": [
+        "cdn-msp.18comic.vip"
+      ]
+    },
+    {
+      "domain": [
+        "cdn-msp.jmcomic-zzz.one"
+      ]
+    },
+    {
+      "domain_keyword": [
+        "-files.gitbook.io"
+      ]
+    },
+    {
+      "domain_keyword": [
+        "vod-adaptive.akamaized.net"
+      ]
+    },
+    {
+      "domain_keyword": [
+        "web-assets.zendesk"
+      ]
+    },
+    {
+      "domain_keyword": [
+        "-res.cloudinary.com"
+      ]
+    },
+    {
+      "domain_keyword": [
+        "dsn.algolia.net"
+      ]
+    },
+    {
+      "domain_keyword": [
+        "-thumbs.pornhost.com"
+      ]
+    },
+    {
+      "domain_keyword": [
+        "-cdn.eporner.com"
+      ]
+    },
+    {
+      "domain_keyword": [
+        "cdn.adultempire.com"
+      ]
+    },
+    {
+      "domain_keyword": [
+        "-assets.dmm.co.jp"
+      ]
+    },
+    {
+      "domain_keyword": [
+        "static.trustpilot.com"
+      ]
+    },
+    {
+      "domain_keyword": [
+        "scripts.trustpilot.com"
+      ]
+    },
+    {
+      "domain_keyword": [
+        "images.trustpilot.com"
+      ]
+    },
+    {
+      "domain_keyword": [
+        "cdn.trustpilot.net"
+      ]
+    },
+    {
+      "domain_keyword": [
+        "assets.trustpilot.net"
+      ]
+    },
+    {
+      "domain_keyword": [
+        "images.trustpilot.net"
+      ]
+    },
+    {
+      "domain_keyword": [
+        "-assets.worldsex.com"
+      ]
+    },
+    {
+      "domain_keyword": [
+        "-thumbs.worldsex.com"
+      ]
+    },
+    {
+      "domain_keyword": [
+        "99avcdn"
+      ]
+    },
+    {
+      "domain_keyword": [
+        "-images.disco-api.com"
+      ]
+    },
+    {
+      "domain_keyword": [
+        "static.grammarly.com"
+      ]
+    }
+  ]
+}
