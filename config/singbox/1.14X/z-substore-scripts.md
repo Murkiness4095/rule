@@ -13,9 +13,22 @@
 | `iphone-full.json` | `iphone.json` | 空 outbound 占位 | 是 |
 | `reF1nd-full.json` | `reF1nd.json` | `providers` + `use_all_providers` | 否 |
 | `linux_mini-full.json` | `linux_mini.json` | 纯自建节点，写死在配置里 | 否 |
+| `nixos-full.json` | `linux.json` | 空 outbound 占位 | 是 |
 
 `-full` 与原版的差异**只有下面这几类**，inbounds / services / experimental / dns 服务器 /
 其余规则一律逐字沿用原文件（每个平台自己那份，不是套用别的平台）。
+
+> **NixOS 用户注意**：`nixos-full.json` 就是给 NixOS 用的，内容与 `linux-full.json` 完全一致，
+> 只改了两处运行时路径，因为 NixOS 上 `/etc/sing-box` 是只读且不可由服务写入的：
+>
+> | 字段 | linux-full.json | nixos-full.json |
+> | --- | --- | --- |
+> | `services[].dashboard.path` | `/etc/sing-box/dashboard` | `/var/lib/sing-box/ui` |
+> | `experimental.cache_file.path` | `/etc/sing-box/cache.db` | `/var/lib/sing-box/cache.db` |
+>
+> `/var/lib/sing-box` 对应 NixOS 的 `StateDirectory = "sing-box"`，由 systemd 自动创建并
+> 赋予服务用户写权限。`experimental.clash_api.external_ui` 仍指向 `/etc/sing-box/ui`，
+> 那是你手动放外部 UI 静态文件的地方，保持只读即可。
 
 ## 一、补了什么
 
@@ -83,7 +96,7 @@ Sub-Store 服务端需要能访问 `raw.githubusercontent.com`（或改用下面
 | --- | --- |
 | 名称 | 随便，例如 `singbox-linux` |
 | 类型 | **远程订阅** |
-| 地址（URL） | 下面「模板地址」按你要的平台二选一 |
+| 地址（URL） | 下面「模板地址」按你要的平台选一行 |
 | 脚本操作 → 脚本 | 下面「脚本地址」 |
 
 **模板地址**（下列链接指向 `feat/mihomo-full-rules` 分支，已可直接使用；
@@ -94,7 +107,10 @@ https://raw.githubusercontent.com/Murkiness4095/rule/feat/mihomo-full-rules/conf
 https://raw.githubusercontent.com/Murkiness4095/rule/feat/mihomo-full-rules/config/singbox/1.14X/linux-full.json
 https://raw.githubusercontent.com/Murkiness4095/rule/feat/mihomo-full-rules/config/singbox/1.14X/windows-full.json
 https://raw.githubusercontent.com/Murkiness4095/rule/feat/mihomo-full-rules/config/singbox/1.14X/iphone-full.json
+https://raw.githubusercontent.com/Murkiness4095/rule/feat/mihomo-full-rules/config/singbox/1.14X/nixos-full.json
 ```
+
+> 第 5 行是 **NixOS** 专用（`/var/lib/sing-box`），其它 Linux 用第 2 行 `linux-full.json`。
 
 访问不了 GitHub 就在前面加 `https://gh-proxy.com/`，例如
 `https://gh-proxy.com/https://raw.githubusercontent.com/Murkiness4095/rule/feat/mihomo-full-rules/config/singbox/1.14X/linux-full.json`。
