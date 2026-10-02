@@ -80,9 +80,16 @@ const POLICIES = [
 ]
 const POLICY_TAGS = POLICIES.map(p => p[0])
 
-// 各策略组的候选出站：节点组优先，再列其它策略组，最后兜底
+// 各策略组的候选出站：节点组优先，再列其它策略组，最后兜底。
+// 注意不能互相引用——sing-box 会报 circular outbound dependency，
+// 所以只允许「后定义的业务组 -> 先定义的业务组」单向引用：
+// POLICIES 的顺序即优先级，组只能引用排在它前面的业务组。
 function candidates(self) {
-  return [...new Set([SELECT, MANUAL, AUTO, FAILOVER, LOW, ...REGION_TAGS, ...POLICY_TAGS.filter(t => t !== self && t !== SELECT), "漏网之鱼", "直连"].filter(t => t !== self))]
+  const selfIdx = POLICIES.findIndex(([t]) => t === self)
+  const earlier = POLICY_TAGS.slice(0, selfIdx)
+  return [
+    ...new Set([SELECT, MANUAL, AUTO, FAILOVER, LOW, ...REGION_TAGS, ...earlier, "漏网之鱼", "直连"].filter(t => t !== self)),
+  ]
 }
 
 function buildOutbounds(ref1nd) {
@@ -107,8 +114,10 @@ function buildOutbounds(ref1nd) {
     list.push({ tag: MANUAL, type: "selector", outbounds: [] })
   }
   for (const [tag] of POLICIES) list.push({ tag, type: "selector", outbounds: candidates(tag) })
-  list.push({ tag: "漏网之鱼", type: "selector", outbounds: [...new Set([SELECT, MANUAL, AUTO, FAILOVER, LOW, ...REGION_TAGS, "直连"])] })
-  list.push({ tag: GLOBAL_SAFE(), type: "selector", outbounds: [...new Set([...POLICIES.filter(p => p[0] !== SELECT).map(p => p[0]), ...NODE_GROUPS, "漏网之鱼", "直连"])] })
+  // 漏网之鱼是兜底组，只引用节点层。不能引用业务组：业务组的候选里也有漏网之鱼，
+  // 互相引用会被内核判为 circular outbound dependency。
+  list.push({ tag: "漏网之鱼", type: "selector", outbounds: [...new Set([MANUAL, AUTO, FAILOVER, LOW, ...REGION_TAGS, "直连"])] })
+  list.push({ tag: "GLOBAL", type: "selector", outbounds: [...new Set([...POLICY_TAGS, ...NODE_GROUPS, "漏网之鱼", "直连"])] })
   list.push({ tag: "直连", type: "direct", domain_resolver: "ali" })
   return list
 }
@@ -176,7 +185,7 @@ function buildRuleSets() {
     "geosite-bilibili", "geosite-youtube", "geosite-telegram", "geosite-xbox", "geosite-github",
     "geosite-netflix", "geosite-twitch", "geosite-spotify", "geosite-bahamut", "geosite-pikpak",
     "geosite-twitter", "geosite-apple", "geosite-microsoft", "geosite-google",
-    "geosite-google-play@cn", "geosite-microsoft@cn", "geosite-private",
+    "geosite-google-play@cn", "geosite-microsoft@cn", "geosite-apple@cn", "geosite-private",
     "geosite-geolocation-!cn", "geosite-cn",
   ]
   return [
