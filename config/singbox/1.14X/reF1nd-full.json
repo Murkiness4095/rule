@@ -1,23 +1,34 @@
 {
-  "$schema": "https://sing-box.sagernet.org/schema.json",
+  "$schema": "https://raw.githubusercontent.com/reF1nd/sing-box/reF1nd-testing/docs/schema.json",
+  "providers": [
+    {
+      "tag": "JC1",
+      "type": "remote",
+      "url": "此处填入订阅链接",
+      "health_check": {"enabled":true,"url":"https://www.gstatic.com/generate_204","interval":"10m","timeout":"3s"},
+      "exclude": "官网|剩余|流量|套餐|免费|订阅|全球直连|到期时间|GB|Expire Date|Traffic|ExpireDate",
+      "http_client": "直连下载",
+      "update_interval": "12h"
+    }
+  ],
   "dns": {
     "servers": [
       {"tag": "local", "type": "local", "prefer_go": true},
       {"tag": "ali", "type": "https", "server": "223.5.5.5"},
       {"tag": "tx", "type": "https", "server": "doh.pub", "domain_resolver": "hosts"},
       {"tag": "google", "type": "https", "server": "8.8.8.8", "detour": "默认代理"},
-      {"tag": "fake-ip-dns-server", "type": "fakeip", "inet4_range": "198.19.0.0/16"},
+      {"tag": "fakeip", "type": "fakeip", "inet4_range": "198.19.0.0/16"},
       {"type": "hosts", "tag": "hosts", "predefined": {"doh.pub": ["1.12.12.21", "120.53.53.53"]}}
     ],
     "rules": [
       {"query_type": ["HTTPS", "SVCB"], "action": "reject"},
       {"clash_mode": "Direct", "server": "ali"},
-      {"clash_mode": "Global", "server": "fake-ip-dns-server"},
+      {"clash_mode": "Global", "server": "fakeip"},
       {"rule_set": ["fakeipfilter-cn", "geosite-cn", "geosite-microsoft@cn", "geosite-apple@cn", "geosite-steam@cn", "geosite-private"], "server": "ali"},
       {"rule_set": "fakeipfilter-!cn", "server": "google"},
       {"type": "logical", "mode": "and", "rules": [{"query_type": ["A", "AAAA"]}, {"rule_set": "geosite-geolocation-!cn", "invert": true}], "action": "evaluate", "server": "google", "client_subnet": "223.5.5.0/24","timeout": "2s"},
       {"match_response": true, "rule_set": "geoip-cn", "server": "ali"},
-      {"query_type": ["A", "AAAA"], "server": "fake-ip-dns-server", "rewrite_ttl": 1}
+      {"query_type": ["A", "AAAA"], "server": "fakeip", "rewrite_ttl": 1}
     ],
     "final": "google",
     "strategy": "ipv4_only", 
@@ -40,12 +51,12 @@
     {"tag": "OneDrive", "type": "selector", "outbounds": ["日本手动", "狮城手动", "香港手动", "美国手动", "台湾手动", "手动选择", "自动选择", "直连"]},
     {"tag": "Apple", "type": "selector", "outbounds": ["日本手动", "狮城手动", "香港手动", "美国手动", "台湾手动", "手动选择", "自动选择", "直连"]},
     {"tag": "漏网之鱼", "type": "selector", "outbounds": ["默认代理", "日本手动", "狮城手动", "香港手动", "美国手动", "台湾手动", "手动选择", "自动选择", "直连"]},
-    {"tag": "日本手动", "type": "selector", "outbounds": []},
-    {"tag": "狮城手动", "type": "selector", "outbounds": []},
-    {"tag": "香港手动", "type": "selector", "outbounds": []},
-    {"tag": "台湾手动", "type": "selector", "outbounds": []},
-    {"tag": "美国手动", "type": "selector", "outbounds": []},
-    {"tag": "手动选择", "type": "selector", "outbounds": []},
+    {"tag": "日本手动", "type": "selector", "outbounds": null, "use_all_providers": true, "include": "🇯🇵|JP|jp|日本|日|Japan", "exclude": "HK"},
+    {"tag": "狮城手动", "type": "selector", "outbounds": null, "use_all_providers": true, "include": "新加坡|坡|狮城|SG|Singapore", "exclude": "日"},
+    {"tag": "香港手动", "type": "selector", "outbounds": null, "use_all_providers": true, "include": "港|HK|(?i)Hong", "exclude": "日"},
+    {"tag": "台湾手动", "type": "selector", "outbounds": null, "use_all_providers": true, "include": "🇹🇼|TW|tw|台湾|台|Taiwan", "exclude": "ZJ|zijian|自建"},
+    {"tag": "美国手动", "type": "selector", "outbounds": null, "use_all_providers": true, "include": "🇺🇸|US|us|美国|美|United States", "exclude": "日|AUS|RUS"},
+    {"tag": "手动选择", "type": "selector", "outbounds": null, "use_all_providers": true, "exclude": "网站|流量|地址|剩余|过期|免费|时间|有效|Traffic|ExpireDate|GB|Expire Date"},
     {"tag": "自动选择", "type": "urltest", "outbounds": [], "url": "https://clients1.google.com/generate_204", "interval": "30m", "tolerance": 100},
     {"tag": "延迟辅助", "type": "urltest", "outbounds": ["直连"], "url": "http://connect.rom.miui.com/generate_204", "interval": "30m"},
     {"tag": "GLOBAL", "type": "selector", "outbounds": ["默认代理", "AI", "YouTube", "Google", "Github", "Telegram", "TikTok", "Netflix", "Wallet", "Steam", "Microsoft", "OneDrive", "Apple", "漏网之鱼", "日本手动", "狮城手动", "香港手动", "美国手动", "台湾手动", "手动选择", "自动选择", "延迟辅助", "直连"]},
@@ -56,8 +67,9 @@
   ],
   "route": {
     "rules": [
+      {"type": "logical", "mode": "and", "rules": [{"port": [53, 853], "invert": true}, {"clash_mode": "Global", "invert": true}, {"type": "logical", "mode": "or", "rules": [{"ip_is_private": true}, {"rule_set": "geoip-cn"}]}], "action": "bypass"},
       {"type": "logical", "mode": "or", "rules": [{"domain_suffix": "push.apple.com"}, {"rule_set": "geoip-telegram"}], "invert": true, "action": "sniff", "sniffer": ["http", "tls", "stun", "quic", "dns"], "timeout": "100ms"},
-      {"inbound": "dns-in", "action": "hijack-dns"},
+      {"type": "logical", "mode": "or", "rules": [{"port": 53}, {"protocol": "dns"}], "action": "hijack-dns"},
       {"ip_is_private": true, "outbound": "直连"},
       {"type": "logical", "mode": "or", "rules": [{"port": 853}, {"protocol": ["stun", "quic"]}], "action": "reject", "no_drop": true},
       {"type": "logical", "mode": "and", "rules": [{"rule_set": "geosite-geolocation-!cn"}, {"port": 443}, {"network": "udp"}], "action": "reject"},
@@ -85,7 +97,7 @@
       {"rule_set": "geosite-steam@cn", "outbound": "直连"},
       {"rule_set": "geosite-steam", "outbound": "Steam"},
       {"rule_set": "geosite-geolocation-!cn", "outbound": "默认代理"},
-      {"action": "resolve"},
+      {"inbound": "mixed-in", "action": "resolve","match_only": true},
       {"rule_set": "geoip-google", "outbound": "Google"},
       {"rule_set": "geoip-apple", "outbound": "Apple"},
       {"rule_set": "geoip-telegram", "outbound": "Telegram"},
@@ -108,45 +120,20 @@
   },
   "inbounds": [
     {
-      "tag": "dns-in",
-      "type": "direct",
-      "listen": "::",
-      "listen_port": 1053
-    },
-    {
-      "tag": "http-in",
-      "type": "http",
-      "listen": "::",
-      "listen_port": 8080
-    },
-    {
-      "tag": "socks-in",
-      "type": "socks",
-      "listen": "::",
-      "listen_port": 1080
-    },
-    {
-      "tag": "redirect-in",
-      "type": "redirect",
-      "listen": "::",
-      "listen_port": 7890
-    },
-    {
-      "tag": "tproxy-in",
-      "type": "tproxy",
-      "listen": "::",
-      "listen_port": 7891
-    },
-    {
       "tag": "tun-in",
       "type": "tun",
-      "interface_name": "momo",
       "address": [
-        "172.31.0.1/30",
+        "172.19.0.1/30",
         "fdfe:dcba:9876::1/126"
       ],
-      "auto_route": false,
-      "auto_redirect": false
+      "auto_route": true,
+      "auto_redirect": true
+    },
+    {
+      "tag": "mixed-in",
+      "type": "mixed",
+      "listen": "0.0.0.0",
+      "listen_port": 7890
     }
   ],
   "services": [
@@ -157,19 +144,19 @@
       "secret": "passwd",
       "dashboard": {
         "enabled": true,
-        "path": "dashboard"
+        "path": "/etc/sing-box/dashboard"
       }
     }
   ],
   "experimental": {
     "cache_file": {
       "enabled": true,
-      "path": "cache.db",
+      "path": "/etc/sing-box/cache.db",
       "store_dns": true
     },
     "clash_api": {
       "external_controller": "0.0.0.0:9095",
-      "external_ui": "ui",
+      "external_ui": "/etc/sing-box/ui",
       "secret": "passwd",
       "default_mode": "Rule"
     }
@@ -187,4 +174,3 @@
     "timestamp": true
   }
 }
-
