@@ -86,17 +86,21 @@ Sub-Store 服务端需要能访问 `raw.githubusercontent.com`（或改用下面
 | 地址（URL） | 下面「模板地址」按你要的平台二选一 |
 | 脚本操作 → 脚本 | 下面「脚本地址」 |
 
-**模板地址**（把 `main` 换成你实际所在的分支）：
+**模板地址**（下列链接指向 `feat/mihomo-full-rules` 分支，已可直接使用；
+将来这些文件合并进 `main` 后，把链接里的分支名换成 `main` 即可）：
 
 ```
-https://raw.githubusercontent.com/Murkiness4095/rule/main/config/singbox/1.14X/momo-full.json
-https://raw.githubusercontent.com/Murkiness4095/rule/main/config/singbox/1.14X/linux-full.json
-https://raw.githubusercontent.com/Murkiness4095/rule/main/config/singbox/1.14X/windows-full.json
-https://raw.githubusercontent.com/Murkiness4095/rule/main/config/singbox/1.14X/iphone-full.json
+https://raw.githubusercontent.com/Murkiness4095/rule/feat/mihomo-full-rules/config/singbox/1.14X/momo-full.json
+https://raw.githubusercontent.com/Murkiness4095/rule/feat/mihomo-full-rules/config/singbox/1.14X/linux-full.json
+https://raw.githubusercontent.com/Murkiness4095/rule/feat/mihomo-full-rules/config/singbox/1.14X/windows-full.json
+https://raw.githubusercontent.com/Murkiness4095/rule/feat/mihomo-full-rules/config/singbox/1.14X/iphone-full.json
 ```
 
 访问不了 GitHub 就在前面加 `https://gh-proxy.com/`，例如
-`https://gh-proxy.com/https://raw.githubusercontent.com/Murkiness4095/rule/main/config/singbox/1.14X/linux-full.json`。
+`https://gh-proxy.com/https://raw.githubusercontent.com/Murkiness4095/rule/feat/mihomo-full-rules/config/singbox/1.14X/linux-full.json`。
+
+> 用 fork 同步上游更新时，建议保留这个分支单独跑 sub-store，
+> 上游更新直接 merge/rebase `main` 进来即可，冲突面只有 `config/singbox/1.14X/` 下的这几个新文件。
 
 **脚本地址**（`name` 要和第 2 步的组合订阅名称一致，这里假定叫 `airport`）：
 
